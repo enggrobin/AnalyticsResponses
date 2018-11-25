@@ -1,0 +1,18 @@
+ Top/Bottom 3 users of year in terms of money spent
+
+select rank () over (Partition by yr order by amnt desc),yr, customer_id, amnt from (
+select EXTRACT(YEAR FROM Payment_Date) as yr,  customer_id,sum(amount) as amnt  from vmtest.paymentnew --as pymnt
+--inner join vmtest.product as prod on prod.product_id = pymnt.product_id --and pymnt.customer_id = 381
+group by EXTRACT(YEAR FROM Payment_Date),customer_id
+) as t
+QUALIFY rank () over (Partition by yr order by amnt desc) <4;
+-------------------------------------------------------------------------------- Q2
+
+ Top/Bottom 5 prodcuts sold in each category
+
+select rank() over (partition by product_cat_id order by cnt1 desc),product_cat_id, product_id,cnt1  from( 
+select product_cat_id,prod.product_id as product_id,count(pymnt.product_id) as cnt1 from vmtest.Product as prod
+inner join vmtest.paymentnew as pymnt on prod.product_id = pymnt.product_id and prod.product_cat_id <> 0
+group by product_cat_id,prod.product_id
+) as t1
+qualify rank() over (partition by product_cat_id order by cnt1 desc) <6
