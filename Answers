@@ -16,3 +16,21 @@ inner join vmtest.paymentnew as pymnt on prod.product_id = pymnt.product_id and 
 group by product_cat_id,prod.product_id
 ) as t1
 qualify rank() over (partition by product_cat_id order by cnt1 desc) <6
+
+------------------------------------------------------------------------------------- Date Time Related Code
+
+select *  from vmtest.paymentnew where payment_date= DATE - interval '11' day;
+
+---------------------------------------------------------------------------------------------------------
+
+select * from (
+select customer_id,payment_id,substr(cast (payment_date as varchar(100)),1,16) dt ,count(*) cnt,count(distinct product_id) pcnt
+from vmtest.paymentnew
+--where customer_id=381
+group by customer_id,payment_id,substr(cast (payment_date as varchar(100)),1,16) 
+) as a
+where a.cnt<> a.pcnt;
+
+---------------------------------------------------------------------------------------------------------
+
+
