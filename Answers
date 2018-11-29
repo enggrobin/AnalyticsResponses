@@ -32,5 +32,24 @@ group by customer_id,payment_id,substr(cast (payment_date as varchar(100)),1,16)
 where a.cnt<> a.pcnt;
 
 ---------------------------------------------------------------------------------------------------------
+A. Arrange the peak time in terms of hour of the day when the maximum number of orders are placed.(24 hours in a day)
+
+select PeakHours,cnt from(
+select EXTRACT(hour FROM pymnt.Payment_Date) as PeakHours,count(payment_id) as cnt from vmtest.paymentnew as pymnt
+group by EXTRACT(hour FROM pymnt.Payment_Date)
+)as t1 order by cnt desc
+
+---------------------------------------------------------------------------------------------------------
+B. Arrange the peak time in terms of day of the week when the maximum number of orders are placed.(7 days in a week)
+select day1,cnt1  from(
+select EXTRACT(day FROM pymnt.Payment_Date) as day1, count(payment_id) as cnt1  from vmtest.paymentnew as pymnt
+group by EXTRACT(day FROM pymnt.Payment_Date)
+) as t1 order by cnt1 desc;
+
+----------------------------------------------------------------------------------------------------------
+
+
+
+
 
 
