@@ -47,8 +47,14 @@ group by EXTRACT(day FROM pymnt.Payment_Date)
 ) as t1 order by cnt1 desc;
 
 ----------------------------------------------------------------------------------------------------------
+ Month wise Top/Bottom 2 users in terms of buying number of items
 
-
+select dense_rank() over (partition by payment_month order by cnt desc),payment_month,cnt, customer_id from (
+select EXTRACT(month FROM Payment_Date) as payment_month, count(paymentnew.payment_id) as cnt,customer_id from vmtest.paymentnew 
+group by EXTRACT(month FROM Payment_Date),customer_id  
+)AS T1
+qualify dense_rank() over (partition by payment_month order by cnt desc) in(1,2)
+order  by payment_month,cnt desc;
 
 
 
